@@ -1,20 +1,21 @@
 package com.edmediandroid.intro
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-class IntroViewModel(private val introRepository: IntroRepository) : ViewModel() {
+class IntroViewModel : ViewModel() {
+    private val introRepository = IntroRepository()
 
     private val _loginResult = MutableLiveData<Result<String>>()
     val loginResult: LiveData<Result<String>> get() = _loginResult
 
-    fun login() {
+    fun login(context: Context) {
         viewModelScope.launch {
-            val result = introRepository.login()
-            _loginResult.postValue(result)
+            introRepository.login(context, _loginResult)
         }
     }
 }

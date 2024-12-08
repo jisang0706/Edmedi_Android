@@ -1,7 +1,10 @@
+import com.android.tools.build.jetifier.core.utils.Log
+import java.io.FileNotFoundException
 import java.util.Properties
 
-val properties = Properties()
-file("app.properties").takeIf { it.exists() }?.inputStream()?.use { properties.load(it) }
+val properties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,10 +24,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        manifestPlaceholders["kakaoAppKey"] = properties.getProperty("kakaoAppKey", "")
+        manifestPlaceholders["kakaoAppKey"] = properties.getProperty("kakaoAppKey", "ww")
+        manifestPlaceholders["kakaoNaitiveAppKey"] = properties.getProperty("kakaoNaitiveAppKey", "www")
+
+        buildConfigField("String", "kakaoAppKey", properties.getProperty("kakaoAppKeyBuildConfig", "\"\""))
     }
 
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -60,5 +67,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
 
-    implementation("com.kakao.sdk:v2-user:2.11.0")
+    implementation("com.kakao.sdk:v2-user:2.20.6")
 }
